@@ -10,7 +10,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame(){
         this.setTitle("Algorithme Génétique");
-        this.setSize(400,500);
+        this.setSize(460,500);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(mainPanel = new MainPanel());
