@@ -11,12 +11,16 @@ import java.util.List;
 public class MainPanel extends JPanel implements ActionListener {
 
     private boolean generated = false;
+    private boolean find = false;
+    private int generationCount = 0;
+
 
     private JButton generate = new JButton();
     private JButton sort = new JButton();
     private JButton selection = new JButton();
     private JButton mutate = new JButton();
     private JButton fill = new JButton();
+    private JButton auto = new JButton();
 
 
 
@@ -34,6 +38,9 @@ public class MainPanel extends JPanel implements ActionListener {
     private JLabel lb = new JLabel("2: ");
     private JLabel lc = new JLabel("3: ");
     private JLabel ld = new JLabel("4: ");
+
+    private JLabel generation = new JLabel("Génération : " + generationCount);
+
 
 
     List<Agent> agentList = new ArrayList<Agent>();
@@ -74,6 +81,16 @@ public class MainPanel extends JPanel implements ActionListener {
         fill.setLocation(305,5);
         fill.setSize(60,20);
         this.add(fill);
+
+        auto.setText("Auto");
+        auto.addActionListener(this);
+        auto.setLocation(380,5);
+        auto.setSize(60,20);
+        this.add(auto);
+
+        generation.setLocation(15,40);
+        generation.setSize(200,20);
+        this.add(generation);
 
         l1.setLocation(15,60);
         l1.setSize(200,20);
@@ -129,85 +146,50 @@ public class MainPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == generate){
-            if(generated == false){
-                generated = true;
-                agentList.clear();
-                for(int i = 0; i <= 7; i++){
-                    agentList.add(new Agent());
-
-                }
-                l1.setText("1: " + agentList.get(0).getGens() + " " + agentList.get(0).getScore());
-                l2.setText("2: " + agentList.get(1).getGens() + " " + agentList.get(1).getScore());
-                l3.setText("3: " + agentList.get(2).getGens() + " " + agentList.get(2).getScore());
-                l4.setText("4: " + agentList.get(3).getGens() + " " + agentList.get(3).getScore());
-                l5.setText("5: " + agentList.get(4).getGens() + " " + agentList.get(4).getScore());
-                l6.setText("6: " + agentList.get(5).getGens() + " " + agentList.get(5).getScore());
-                l7.setText("7: " + agentList.get(6).getGens() + " " + agentList.get(6).getScore());
-                l8.setText("8: " + agentList.get(7).getGens() + " " + agentList.get(7).getScore());
-            }
-
-
+            generate();
         }
         else if(e.getSource() == sort){
-            for(int i=0; i<agentList.size(); i++) {
-                for(int j=0; j<agentList.size()-1-i; j++) {
-                    if(agentList.get(j).getScore() < agentList.get(j + 1).getScore()) {
-                        Agent t = agentList.get(j);
-                        agentList.set(j, agentList.get(j+1));
-                        agentList.set(j+1, t);
-                    }
-                }
-            }
-            l1.setText("1: " + agentList.get(0).getGens() + " " + agentList.get(0).getScore());
-            l2.setText("2: " + agentList.get(1).getGens() + " " + agentList.get(1).getScore());
-            l3.setText("3: " + agentList.get(2).getGens() + " " + agentList.get(2).getScore());
-            l4.setText("4: " + agentList.get(3).getGens() + " " + agentList.get(3).getScore());
-            l5.setText("5: " + agentList.get(4).getGens() + " " + agentList.get(4).getScore());
-            l6.setText("6: " + agentList.get(5).getGens() + " " + agentList.get(5).getScore());
-            l7.setText("7: " + agentList.get(6).getGens() + " " + agentList.get(6).getScore());
-            l8.setText("8: " + agentList.get(7).getGens() + " " + agentList.get(7).getScore());
-
-
+            sort();
         }
         else if(e.getSource() == selection){
+            selection();
 
-            AgentList2.add(agentList.get(0));
-
-            AgentList2.add(new Agent(agentList.get(0), agentList.get(1)));
-            AgentList2.add(new Agent(agentList.get(1), agentList.get(2)));
-            AgentList2.add(new Agent(agentList.get(0), agentList.get(2)));
-
-            la.setText("1: " + agentList.get(0).getGens() + " " + agentList.get(0).getScore());
-            lb.setText("2: " + AgentList2.get(0).getGens() + " " + AgentList2.get(0).getScore());
-            lc.setText("3: " + AgentList2.get(1).getGens() + " " + AgentList2.get(1).getScore());
-            ld.setText("4: " + AgentList2.get(2).getGens() + " " + AgentList2.get(2).getScore());
 
 
         }
         else if(e.getSource() == mutate){
-            AgentList3.clear();
-            AgentList3.add(new Agent(AgentList2.get(0)));
-            AgentList3.add(new Agent(AgentList2.get(1)));
-            AgentList3.add(new Agent(AgentList2.get(2)));
-            AgentList3.add(new Agent(AgentList2.get(3)));
-
-            la.setText("1: " + AgentList3.get(0).getGens() + " " + AgentList3.get(0).getScore());
-            lb.setText("2: " + AgentList3.get(1).getGens() + " " + AgentList3.get(1).getScore());
-            lc.setText("3: " + AgentList3.get(2).getGens() + " " + AgentList3.get(2).getScore());
-            ld.setText("4: " + AgentList3.get(3).getGens() + " " + AgentList3.get(3).getScore());
+            mutate();
 
         }
         else if(e.getSource() == fill){
+            fill();
+
+        }
+        else if(e.getSource() == auto){
+            generate();
+            do{
+                generationCount++;
+                generation.setText("Génération : " + generationCount);
+                sort();
+                selection();
+                mutate();
+                fill();
+                for(int i = 0; i <= 7; i++){
+                    if(agentList.get(i).getScore() == 8){
+                        find = true;
+                    }
+                }
+
+            }while (find == false);
+        }
+    }
+    public void generate(){
+        if(generated == false){
+            generated = true;
             agentList.clear();
-            agentList.add(AgentList3.get(0));
-            agentList.add(AgentList3.get(1));
-            agentList.add(AgentList3.get(2));
-            agentList.add(AgentList3.get(3));
-
-
-            for(int i = 0; i <= 3; i++){
+            for(int i = 0; i <= 7; i++){
                 agentList.add(new Agent());
-                System.out.println(agentList.get(i).getGens());
+
             }
             l1.setText("1: " + agentList.get(0).getGens() + " " + agentList.get(0).getScore());
             l2.setText("2: " + agentList.get(1).getGens() + " " + agentList.get(1).getScore());
@@ -217,9 +199,73 @@ public class MainPanel extends JPanel implements ActionListener {
             l6.setText("6: " + agentList.get(5).getGens() + " " + agentList.get(5).getScore());
             l7.setText("7: " + agentList.get(6).getGens() + " " + agentList.get(6).getScore());
             l8.setText("8: " + agentList.get(7).getGens() + " " + agentList.get(7).getScore());
-
         }
     }
+    public void sort(){
+        for(int i=0; i<agentList.size(); i++) {
+            for(int j=0; j<agentList.size()-1-i; j++) {
+                if(agentList.get(j).getScore() < agentList.get(j + 1).getScore()) {
+                    Agent t = agentList.get(j);
+                    agentList.set(j, agentList.get(j+1));
+                    agentList.set(j+1, t);
+                }
+            }
+        }
+        l1.setText("1: " + agentList.get(0).getGens() + " " + agentList.get(0).getScore());
+        l2.setText("2: " + agentList.get(1).getGens() + " " + agentList.get(1).getScore());
+        l3.setText("3: " + agentList.get(2).getGens() + " " + agentList.get(2).getScore());
+        l4.setText("4: " + agentList.get(3).getGens() + " " + agentList.get(3).getScore());
+        l5.setText("5: " + agentList.get(4).getGens() + " " + agentList.get(4).getScore());
+        l6.setText("6: " + agentList.get(5).getGens() + " " + agentList.get(5).getScore());
+        l7.setText("7: " + agentList.get(6).getGens() + " " + agentList.get(6).getScore());
+        l8.setText("8: " + agentList.get(7).getGens() + " " + agentList.get(7).getScore());
 
+    }
+
+    public void selection(){
+        AgentList2.add(agentList.get(0));
+
+        AgentList2.add(new Agent(agentList.get(0), agentList.get(1)));
+        AgentList2.add(new Agent(agentList.get(1), agentList.get(2)));
+        AgentList2.add(new Agent(agentList.get(0), agentList.get(2)));
+
+        la.setText("1: " + agentList.get(0).getGens() + " " + agentList.get(0).getScore());
+        lb.setText("2: " + AgentList2.get(0).getGens() + " " + AgentList2.get(0).getScore());
+        lc.setText("3: " + AgentList2.get(1).getGens() + " " + AgentList2.get(1).getScore());
+        ld.setText("4: " + AgentList2.get(2).getGens() + " " + AgentList2.get(2).getScore());
+    }
+    public void mutate(){
+        AgentList3.clear();
+        AgentList3.add(new Agent(AgentList2.get(0)));
+        AgentList3.add(new Agent(AgentList2.get(1)));
+        AgentList3.add(new Agent(AgentList2.get(2)));
+        AgentList3.add(new Agent(AgentList2.get(3)));
+
+        la.setText("1: " + AgentList3.get(0).getGens() + " " + AgentList3.get(0).getScore());
+        lb.setText("2: " + AgentList3.get(1).getGens() + " " + AgentList3.get(1).getScore());
+        lc.setText("3: " + AgentList3.get(2).getGens() + " " + AgentList3.get(2).getScore());
+        ld.setText("4: " + AgentList3.get(3).getGens() + " " + AgentList3.get(3).getScore());
+    }
+    public void fill(){
+        agentList.clear();
+        agentList.add(AgentList3.get(0));
+        agentList.add(AgentList3.get(1));
+        agentList.add(AgentList3.get(2));
+        agentList.add(AgentList3.get(3));
+
+
+        for(int i = 0; i <= 3; i++){
+            agentList.add(new Agent());
+            System.out.println(agentList.get(i).getGens());
+        }
+        l1.setText("1: " + agentList.get(0).getGens() + " " + agentList.get(0).getScore());
+        l2.setText("2: " + agentList.get(1).getGens() + " " + agentList.get(1).getScore());
+        l3.setText("3: " + agentList.get(2).getGens() + " " + agentList.get(2).getScore());
+        l4.setText("4: " + agentList.get(3).getGens() + " " + agentList.get(3).getScore());
+        l5.setText("5: " + agentList.get(4).getGens() + " " + agentList.get(4).getScore());
+        l6.setText("6: " + agentList.get(5).getGens() + " " + agentList.get(5).getScore());
+        l7.setText("7: " + agentList.get(6).getGens() + " " + agentList.get(6).getScore());
+        l8.setText("8: " + agentList.get(7).getGens() + " " + agentList.get(7).getScore());
+    }
 
 }
